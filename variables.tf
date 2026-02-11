@@ -17,7 +17,7 @@ EOT
     name                    = string
     resource_group_name     = string
     description             = optional(string)
-    exportable              = optional(bool, false)
+    exportable              = optional(bool) # Default: false
   }))
 }
 
