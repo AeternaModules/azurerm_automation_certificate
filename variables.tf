@@ -4,6 +4,8 @@ Map of automation_certificates, attributes below
 Required:
     - automation_account_name
     - base64
+    - base64_key_vault_id (alternative to base64 - read from Key Vault instead)
+    - base64_key_vault_secret_name (alternative to base64 - read from Key Vault instead)
     - name
     - resource_group_name
 Optional:
@@ -12,12 +14,14 @@ Optional:
 EOT
 
   type = map(object({
-    automation_account_name = string
-    base64                  = string
-    name                    = string
-    resource_group_name     = string
-    description             = optional(string)
-    exportable              = optional(bool) # Default: false
+    automation_account_name      = string
+    base64                       = string
+    base64_key_vault_id          = optional(string)
+    base64_key_vault_secret_name = optional(string)
+    name                         = string
+    resource_group_name          = string
+    description                  = optional(string)
+    exportable                   = optional(bool) # Default: false
   }))
   validation {
     condition = alltrue([
