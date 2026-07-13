@@ -4,8 +4,8 @@ Map of automation_certificates, attributes below
 Required:
     - automation_account_name
     - base64
-    - base64_key_vault_id (alternative to base64 - read from Key Vault instead)
-    - base64_key_vault_secret_name (alternative to base64 - read from Key Vault instead)
+    - base64_key_vault_id (optional, alternative to base64)
+    - base64_key_vault_secret_name (optional, alternative to base64)
     - name
     - resource_group_name
 Optional:
@@ -21,28 +21,15 @@ EOT
     name                         = string
     resource_group_name          = string
     description                  = optional(string)
-    exportable                   = optional(bool) # Default: false
+    exportable                   = optional(bool)
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_certificates : (
-        length(v.name) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_certificates : (
-        length(v.automation_account_name) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_automation_certificate's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
   # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: resource_group_name
   #   condition: length(value) <= 90
   #   message:   [from resourcegroups.ValidateName: invalid when len(value) > 90]
@@ -57,6 +44,9 @@ EOT
   #   source:    [from resourcegroups.ValidateName: invalid when len(value) == 0]
   # path: resource_group_name
   #   source:    [from resourcegroups.ValidateName] !matched
+  # path: automation_account_name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: base64
   #   source:    validation.StringIsBase64(...) - no translation rule yet, add one
 }
